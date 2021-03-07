@@ -45,3 +45,15 @@ unitCube mt cnt
     | otherwise = Nothing
     where
         thisTerms = findTermsPadded mt cnt
+
+canJoin :: [Term] -> [Term] -> Bool
+canJoin [] [] = True
+canJoin [] _  = False
+canJoin _ []  = False
+canJoin (x:xs) (y:ys)
+    | x == y             = canJoin xs ys
+    | x == DC || y == DC = False
+    | otherwise          = xs == ys
+
+canJoinCube :: Cube -> Cube -> Bool
+canJoinCube x y = canJoin (terms x) (terms y)
