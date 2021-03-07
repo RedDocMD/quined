@@ -1,11 +1,8 @@
 module Lib
-    ( someFunc
+    (
     ) where
 
 import           Data.Bits
-
-someFunc :: IO ()
-someFunc = putStrLn "someFunc"
 
 data Term = One | Zero | DC deriving (Eq)
 
@@ -20,7 +17,7 @@ instance Show Term where
 
 
 instance Eq Cube where
-    a == b = (noOfTerms a == noOfTerms b) && (terms a == terms b)
+    a == b = terms a == terms b
 
 findTerms :: Int -> [Term]
 findTerms 1 = [One]
