@@ -1,5 +1,10 @@
 module Lib
-    (
+    ( Term (One, Zero, DC)
+    , Cube (Cube)
+    , terms
+    , noOfTerms
+    , minTerms
+    , unitCube
     ) where
 
 import           Data.Bits
@@ -8,7 +13,7 @@ data Term = One | Zero | DC deriving (Eq)
 
 data Cube = Cube {noOfTerms :: Int
                  ,terms     :: [Term]
-                 ,minTerms  :: [Int]}
+                 ,minTerms  :: [Int]} deriving (Show)
 
 instance Show Term where
     show One  = "1"
@@ -28,11 +33,15 @@ findTerms a
 
 
 findTermsPadded :: Int -> Int -> [Term]
-findTermsPadded mt cnt = replicate (cnt - fixedLen) Zero ++ fixedTerms
+findTermsPadded mt cnt = replicate (cnt - fixedLen) Zero ++ reverse fixedTerms
     where fixedTerms = findTerms mt
           fixedLen = length fixedTerms
 
-unitCube :: Int -> Int -> Cube
-unitCube mt cnt = Cube {noOfTerms = cnt
-                       ,terms = reverse $ findTermsPadded mt cnt
-                       ,minTerms = [mt]}
+unitCube :: Int -> Int -> Maybe Cube
+unitCube mt cnt
+    | length thisTerms == cnt = Just Cube {noOfTerms = cnt
+                                          ,terms = thisTerms
+                                          ,minTerms = [mt]}
+    | otherwise = Nothing
+    where
+        thisTerms = findTermsPadded mt cnt
