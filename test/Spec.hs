@@ -77,3 +77,17 @@ main = hspec $ do
                 let cube2 = cubeFromTerms [One, One, Zero, Zero]
                 canJoinCube cube1 cube2 `shouldBe` False
 
+    describe "Join cubes" $ do
+        it "should join with 0 DC's" $ do
+            let cube1 = cubeFromTerms [Zero, One, One, One]
+            let cube2 = cubeFromTerms [Zero, Zero, One, One]
+            joinCube cube1 cube2 `shouldBe` cubeFromTerms [Zero, DC, One, One]
+        it "should join with 1 DC's" $ do
+            let cube1 = cubeFromTerms [DC, One, One, One]
+            let cube2 = cubeFromTerms [DC, Zero, One, One]
+            joinCube cube1 cube2 `shouldBe` cubeFromTerms [DC, DC, One, One]
+        it "should join with 2 DC's" $ do
+            let cube1 = cubeFromTerms [DC, One, One, DC]
+            let cube2 = cubeFromTerms [DC, Zero, One, DC]
+            joinCube cube1 cube2 `shouldBe` cubeFromTerms [DC, DC, One, DC]
+

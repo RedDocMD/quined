@@ -79,3 +79,11 @@ canJoin (x:xs) (y:ys)
 
 canJoinCube :: Cube -> Cube -> Bool
 canJoinCube x y = canJoin (terms x) (terms y)
+
+joinCube :: Cube -> Cube -> Cube
+joinCube cube1 cube2
+    | canJoinCube cube1 cube2 = cubeFromTerms $ joinTerms (terms cube1) (terms cube2)
+    | otherwise               = error $ "Cannot join " ++ show cube1 ++ " and " ++ show cube2
+    where
+        flattenTermPair term1 term2 = if term1 == term2 then term1 else DC
+        joinTerms = zipWith flattenTermPair
