@@ -5,6 +5,7 @@ module Lib
     , noOfTerms
     , minTerms
     , unitCube
+    , cubeFromTerms
     , canJoinCube
     ) where
 
@@ -38,14 +39,41 @@ findTermsPadded mt cnt = replicate (cnt - fixedLen) Zero ++ reverse fixedTerms
     where fixedTerms = findTerms mt
           fixedLen = length fixedTerms
 
-unitCube :: Int -> Int -> Maybe Cube
+unitCube :: Int -> Int -> Cube
 unitCube mt cnt
-    | length thisTerms == cnt = Just Cube {noOfTerms = cnt
+    | length thisTerms == cnt = Cube {noOfTerms = cnt
                                           ,terms = thisTerms
                                           ,minTerms = [mt]}
-    | otherwise = Nothing
+    | otherwise = error $ "Cannot create cube from " ++ show mt ++ " to have " ++ show cnt ++ " terms"
     where
         thisTerms = findTermsPadded mt cnt
+
+cubeFromTerms :: [Term] -> Cube
+cubeFromTerms ts = Cube {terms = ts, noOfTerms = length ts, minTerms = allTerms}
+    where
+        allTerms = map (minTermFromValues . map termToInt) (removeAllDC ts)
+
+minTermFromValues :: [Int] -> Int
+minTermFromValues = foldl (\acc x -> 2 * acc + x) 0
+
+termToInt :: Term -> Int
+termToInt One  = 1
+termToInt Zero = 0
+termToInt DC   = error "Cannot convert DC to Int"
+
+removeFirstDC :: [Term] -> [[Term]]
+removeFirstDC term = term1 : [term2]
+    where
+        term1 = front ++ One:back
+        term2 = front ++ Zero:back
+        (front, back) = break (==DC) term
+
+removeAllDC :: [Term] -> [[Term]]
+removeAllDC term = removeAllDCRec [term]
+    where
+        removeAllDCRec xs@(x:_)
+            | DC `elem` x = concatMap removeFirstDC xs
+            | otherwise   = xs
 
 canJoin :: [Term] -> [Term] -> Bool
 canJoin [] [] = True
