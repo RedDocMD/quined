@@ -1,15 +1,7 @@
-module Lib
-    ( Term (One, Zero, DC)
-    , Cube (Cube)
-    , terms
-    , noOfTerms
-    , minTerms
-    , unitCube
-    , cubeFromTerms
-    , canJoinCube
-    ) where
+module Lib where
 
 import           Data.Bits
+import           Data.List
 
 data Term = One | Zero | DC deriving (Eq)
 
@@ -49,7 +41,7 @@ unitCube mt cnt
         thisTerms = findTermsPadded mt cnt
 
 cubeFromTerms :: [Term] -> Cube
-cubeFromTerms ts = Cube {terms = ts, noOfTerms = length ts, minTerms = allTerms}
+cubeFromTerms ts = Cube {terms = ts, noOfTerms = length ts, minTerms = sort allTerms}
     where
         allTerms = map (minTermFromValues . map termToInt) (removeAllDC ts)
 
@@ -64,15 +56,16 @@ termToInt DC   = error "Cannot convert DC to Int"
 removeFirstDC :: [Term] -> [[Term]]
 removeFirstDC term = term1 : [term2]
     where
-        term1 = front ++ One:back
-        term2 = front ++ Zero:back
+        term1 = front ++ One:trimmedBack
+        term2 = front ++ Zero:trimmedBack
         (front, back) = break (==DC) term
+        trimmedBack = tail back
 
 removeAllDC :: [Term] -> [[Term]]
 removeAllDC term = removeAllDCRec [term]
     where
         removeAllDCRec xs@(x:_)
-            | DC `elem` x = concatMap removeFirstDC xs
+            | DC `elem` x = removeAllDCRec $ concatMap removeFirstDC xs
             | otherwise   = xs
 
 canJoin :: [Term] -> [Term] -> Bool

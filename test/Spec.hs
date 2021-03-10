@@ -5,7 +5,7 @@ import           Test.Hspec
 
 main :: IO ()
 main = hspec $ do
-    describe "Cube creation" $ do
+    describe "Cube creation from min-term" $ do
         describe "Zero" $ do
             it "should convert 0 properly" $ do
                 unitCube 0 4 `shouldBe` Cube {terms = [Zero, Zero, Zero, Zero], noOfTerms = 4, minTerms = [0]}
@@ -22,6 +22,14 @@ main = hspec $ do
                 evaluate (unitCube 8 3) `shouldThrow` anyException
             it "should convert 8 with 4 terms" $ do
                 unitCube 8 4 `shouldBe` Cube {terms = [One, Zero, Zero, Zero], noOfTerms = 4, minTerms = [8]}
+
+    describe "Cube creation from terms" $ do
+        it "should work with zero DC" $ do
+            cubeFromTerms [One, Zero, One, Zero] `shouldBe` Cube {terms = [One, Zero, One, Zero], noOfTerms = 4, minTerms = [10]}
+        it "should work with one DC" $ do
+            cubeFromTerms [One, DC, One, Zero] `shouldBe` Cube {terms = [One, DC, One, Zero], noOfTerms = 4, minTerms = [10, 14]}
+        it "should work with two DC" $ do
+            cubeFromTerms [One, DC, One, DC] `shouldBe` Cube {terms = [One, DC, One, DC], noOfTerms = 4, minTerms = [10, 11, 14, 15]}
 
     describe "Can or Cannot join cubes" $ do
         describe "can join with no DC's" $ do
