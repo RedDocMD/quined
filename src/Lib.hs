@@ -5,6 +5,7 @@ module Lib
     , noOfTerms
     , minTerms
     , unitCube
+    , canJoin
     ) where
 
 import           Data.Bits
