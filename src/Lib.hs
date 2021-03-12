@@ -2,6 +2,7 @@ module Lib where
 
 import           Data.Bits
 import           Data.List
+import           Data.List.Utils
 
 data Term = One | Zero | DC deriving (Eq)
 
@@ -86,3 +87,6 @@ joinCube cube1 cube2 = cubeFromTerms $ joinTerms (terms cube1) (terms cube2)
     where
         flattenTermPair term1 term2 = if term1 == term2 then term1 else DC
         joinTerms = zipWith flattenTermPair
+
+oneCount :: Cube -> Int
+oneCount cube = countElem One (terms cube)
