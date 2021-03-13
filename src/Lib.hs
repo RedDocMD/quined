@@ -112,3 +112,13 @@ joinAllAdjacent :: M.Map Int [Cube] -> Int -> [Cube]
 joinAllAdjacent m mtc = foldl (\acc x -> acc ++ joinAdjacent m x) [] ocs
     where
         ocs = take mtc (iterate (+1) 0)
+
+flattenMap :: Ord k => M.Map k [a] -> [a]
+flattenMap = M.foldl (++) []
+
+reduceOnce :: Int -> [Cube] -> (M.Map Int [Cube], [Cube], [Cube])
+reduceOnce mtc cbs = (partitionedCubes, joinedCubes, leftoverCubes)
+    where
+        partitionedCubes = partitionCubes cbs
+        joinedCubes = joinAllAdjacent partitionedCubes mtc
+        leftoverCubes = cbs \\ joi
