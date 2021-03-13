@@ -4,7 +4,7 @@ cabal-version: 1.12
 --
 -- see: https://github.com/sol/hpack
 --
--- hash: 891b67172a303917e84c864999f4b9867deff93d918fbc1d2b46b03a69ac57e2
+-- hash: e0818892e7ca055b75c230d0a6f0413ca17fe2ee5b794cc33725833186cfb27f
 
 name:           quined
 version:        0.1.0.0
@@ -35,6 +35,7 @@ library
   build-depends:
       MissingH >=1.4.3
     , base >=4.7 && <5
+    , containers >=0.6
     , hspec >=2.7.8
   default-language: Haskell2010
 
@@ -48,6 +49,7 @@ executable quined-exe
   build-depends:
       MissingH >=1.4.3
     , base >=4.7 && <5
+    , containers >=0.6
     , hspec >=2.7.8
     , quined
   default-language: Haskell2010
@@ -63,6 +65,7 @@ test-suite quined-test
   build-depends:
       MissingH >=1.4.3
     , base >=4.7 && <5
+    , containers >=0.6
     , hspec >=2.7.8
     , quined
   default-language: Haskell2010

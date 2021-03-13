@@ -3,6 +3,7 @@ module Lib where
 import           Data.Bits
 import           Data.List
 import           Data.List.Utils
+import qualified Data.Map.Strict as M
 
 data Term = One | Zero | DC deriving (Eq)
 
@@ -15,9 +16,9 @@ instance Show Term where
     show Zero = "0"
     show DC   = "-"
 
-
 instance Eq Cube where
     a == b = terms a == terms b
+
 
 findTerms :: Int -> [Term]
 findTerms 1 = [One]
@@ -90,3 +91,24 @@ joinCube cube1 cube2 = cubeFromTerms $ joinTerms (terms cube1) (terms cube2)
 
 oneCount :: Cube -> Int
 oneCount cube = countElem One (terms cube)
+
+partitionCubes :: [Cube] -> M.Map Int [Cube]
+partitionCubes = foldl (\m x -> mapAppend (oneCount x) x m) M.empty
+
+mapAppend :: Ord k => k -> a -> M.Map k [a] -> M.Map k [a]
+mapAppend k v m =
+    case M.lookup k m of
+        Just list -> M.insert k (v:list) m
+        Nothing   -> M.insert k [v] m
+
+-- Joins all possible cubes for a given one-count
+joinAdjacent :: M.Map Int [Cube] -> Int -> [Cube]
+joinAdjacent m oc =
+    case (M.lookup oc m, M.lookup (oc + 1) m) of
+        (Just list1, Just list2) -> map (uncurry joinCube) $ filter (uncurry canJoinCube) [(x, y) | x <- list1, y <- list2]
+        _                        -> []
+
+joinAllAdjacent :: M.Map Int [Cube] -> Int -> [Cube]
+joinAllAdjacent m mtc = foldl (\acc x -> acc ++ joinAdjacent m x) [] ocs
+    where
+        ocs = take mtc (iterate (+1) 0)
